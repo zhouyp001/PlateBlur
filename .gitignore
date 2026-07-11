@@ -3,6 +3,9 @@ openspec
 
 build
 dist
+dist_cv_backup
+dist_qt_test
+doc
 
 *.mp4
 ultralytics

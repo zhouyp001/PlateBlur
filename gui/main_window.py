@@ -7,7 +7,6 @@ import tempfile
 import atexit
 from pathlib import Path
 
-import cv2
 import psutil
 
 from PySide6.QtWidgets import (
@@ -16,8 +15,9 @@ from PySide6.QtWidgets import (
     QGroupBox, QGridLayout, QLabel, QStatusBar, QMessageBox,
     QSizePolicy, QApplication, QSplitter, QSlider,
 )
-from PySide6.QtCore import Qt, QTimer, QThread
-from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtCore import Qt, QUrl, QTimer, QThread
+from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtMultimediaWidgets import QVideoWidget
 
 from processor import VideoProcessor, auto_detect, load_config
 
@@ -33,29 +33,21 @@ def _fmt_time(ms):
 
 
 class _VideoPlayer(QWidget):
-    """基于 OpenCV + QLabel 的视频播放器（替代 QMediaPlayer）"""
+    """带播放控件的视频播放器（QtMultimedia）"""
 
     def __init__(self, name, parent=None):
         super().__init__(parent)
         self._name = name
-        self._cap = None
-        self._fps = 30.0
-        self._total_frames = 0
-        self._current_frame = 0
-        self._playing = False
         self._seeking = False
-        self._source_path = None
-        self._last_label_size = (0, 0)
 
-        self._video_label = QLabel()
-        self._video_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self._video_label.setMinimumSize(320, 240)
-        self._video_label.setAlignment(Qt.AlignCenter)
-        self._video_label.setStyleSheet("background-color: black;")
-        self._video_label.setText("未加载视频")
+        self._player = QMediaPlayer()
+        audio = QAudioOutput()
+        self._player.setAudioOutput(audio)
 
-        self._timer = QTimer(self)
-        self._timer.timeout.connect(self._next_frame)
+        self._video = QVideoWidget()
+        self._video.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self._video.setMinimumSize(320, 240)
+        self._player.setVideoOutput(self._video)
 
         # Controls
         self._btn_play = QPushButton("▶")
@@ -75,7 +67,7 @@ class _VideoPlayer(QWidget):
         # Layout
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self._video_label, stretch=1)
+        layout.addWidget(self._video, stretch=1)
 
         ctrl = QHBoxLayout()
         ctrl.setContentsMargins(0, 4, 0, 0)
@@ -84,127 +76,100 @@ class _VideoPlayer(QWidget):
         ctrl.addWidget(self._time_label)
         layout.addLayout(ctrl)
 
+        # Signals
+        self._player.positionChanged.connect(self._on_position)
+        self._player.durationChanged.connect(self._on_duration)
+        self._player.playbackStateChanged.connect(self._on_state)
+        self._player.mediaStatusChanged.connect(self._on_media_status)
+        self._player.errorOccurred.connect(
+            lambda err, es, n=name: logger.error(f"播放器[{n}] 错误: {err} {es}")
+        )
+
     # -- Public API --
 
     def load(self, path):
         logger.info(f"播放器[{self._name}] 加载: {path}")
-        self.stop()
-        self._source_path = path
-        self._cap = cv2.VideoCapture(path)
-        if not self._cap.isOpened():
-            logger.error(f"播放器[{self._name}] 无法打开: {path}")
-            self._cap = None
-            return
-        self._fps = self._cap.get(cv2.CAP_PROP_FPS)
-        if self._fps <= 0:
-            self._fps = 30.0
-        self._total_frames = int(self._cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        self._current_frame = 0
-        self._slider.setRange(0, max(0, self._total_frames - 1))
-        self._show_frame(0)
+        self._player.setSource(QUrl.fromLocalFile(path))
 
     def preview(self):
-        self._show_frame(0)
+        """等待媒体加载完成后播放一帧，然后暂停以显示首帧画面。"""
+        def _show_frame(status):
+            if status == QMediaPlayer.MediaStatus.LoadedMedia:
+                try:
+                    self._player.mediaStatusChanged.disconnect(_show_frame)
+                except Exception:
+                    pass
+                logger.info(f"播放器[{self._name}] 媒体已加载，显示首帧")
+                self._player.play()
+                QTimer.singleShot(500, self._player.pause)
+
+        if self._player.mediaStatus() == QMediaPlayer.MediaStatus.LoadedMedia:
+            self._player.play()
+            QTimer.singleShot(500, self._player.pause)
+        else:
+            self._player.mediaStatusChanged.connect(_show_frame)
 
     def stop(self):
-        self._timer.stop()
-        self._playing = False
-        if self._cap:
-            self._cap.release()
-            self._cap = None
-        self._btn_play.setText("▶")
+        self._player.stop()
 
     def play(self):
-        if self._cap and self._current_frame >= self._total_frames - 1:
-            self._seek_to(0)
-        if self._cap and not self._playing:
-            self._playing = True
-            self._btn_play.setText("⏸")
-            interval = max(1, int(1000.0 / self._fps))
-            self._timer.start(interval)
+        if self._player.mediaStatus() == QMediaPlayer.MediaStatus.EndOfMedia:
+            self._player.setPosition(0)
+        self._player.play()
 
     def pause(self):
-        self._timer.stop()
-        self._playing = False
-        self._btn_play.setText("▶")
+        self._player.pause()
 
     def reset(self):
-        self.stop()
-        self._source_path = None
-        self._total_frames = 0
-        self._current_frame = 0
+        self._player.stop()
+        self._player.setSource(QUrl())
         self._slider.setValue(0)
-        self._slider.setRange(0, 0)
         self._time_label.setText("00:00 / 00:00")
-        self._video_label.setText("未加载视频")
+        self._btn_play.setText("▶")
 
-    # -- Internal --
-
-    def _show_frame(self, frame_idx):
-        if not self._cap or frame_idx < 0:
-            return
-        # 只在非顺序播放时才 seek（seek 很慢，需要定位关键帧）
-        if frame_idx != self._current_frame + 1:
-            self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-        ret, frame = self._cap.read()
-        if not ret:
-            return
-        self._current_frame = frame_idx
-        h, w = frame.shape[:2]
-        label_w = self._video_label.width()
-        label_h = self._video_label.height()
-        cur_size = (label_w, label_h)
-        if cur_size != self._last_label_size and label_w > 10 and label_h > 10:
-            self._last_label_size = cur_size
-            scale = min(label_w / w, label_h / h)
-            self._display_w, self._display_h = int(w * scale), int(h * scale)
-        # 先缩小再转 RGB：resize 在 BGR 上做，转换只处理小图
-        if label_w > 10 and label_h > 10 and (self._display_w, self._display_h) != (w, h):
-            frame = cv2.resize(frame, (self._display_w, self._display_h))
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        ch = 3
-        bytes_per_line = ch * frame.shape[1]
-        img = QImage(frame.data, frame.shape[1], frame.shape[0],
-                     bytes_per_line, QImage.Format_RGB888)
-        self._video_label.setPixmap(QPixmap.fromImage(img))
-        self._update_time_label()
-
-    def _next_frame(self):
-        if not self._cap or not self._playing:
-            return
-        if self._current_frame >= self._total_frames - 1:
-            self.pause()
-            self._slider.setValue(self._total_frames - 1)
-            return
-        self._show_frame(self._current_frame + 1)
-        if not self._seeking:
-            self._slider.setValue(self._current_frame)
-
-    def _seek_to(self, frame_idx):
-        self._show_frame(frame_idx)
-        self._slider.setValue(frame_idx)
+    # -- Slots --
 
     def _toggle_play(self):
-        if self._playing:
-            self.pause()
+        if self._player.playbackState() == QMediaPlayer.PlayingState:
+            self._player.pause()
+        elif self._player.mediaStatus() == QMediaPlayer.MediaStatus.EndOfMedia:
+            self._player.setPosition(0)
+            self._player.play()
         else:
-            self.play()
+            self._player.play()
 
-    def _update_time_label(self):
-        dur_ms = int(self._total_frames / self._fps * 1000) if self._fps > 0 else 0
-        pos_ms = int(self._current_frame / self._fps * 1000) if self._fps > 0 else 0
-        self._time_label.setText(f"{_fmt_time(pos_ms)} / {_fmt_time(dur_ms)}")
+    def _on_position(self, pos):
+        if not self._seeking:
+            self._slider.setValue(pos)
+        dur = self._player.duration()
+        self._time_label.setText(f"{_fmt_time(pos)} / {_fmt_time(dur)}")
+
+    def _on_duration(self, dur):
+        self._slider.setRange(0, dur)
+        self._time_label.setText(f"00:00 / {_fmt_time(dur)}")
+
+    def _on_state(self, state):
+        if state == QMediaPlayer.PlayingState:
+            self._btn_play.setText("⏸")
+        else:
+            self._btn_play.setText("▶")
+
+    def _on_media_status(self, status):
+        if status == QMediaPlayer.MediaStatus.EndOfMedia:
+            self._player.setPosition(0)
+            self._player.pause()
+            self._slider.setValue(0)
+            self._btn_play.setText("▶")
 
     def _on_slider_pressed(self):
         self._seeking = True
 
     def _on_slider_moved(self, pos):
-        dur_ms = int(self._total_frames / self._fps * 1000) if self._fps > 0 else 0
-        self._time_label.setText(f"{_fmt_time(pos / self._fps * 1000 if self._fps > 0 else 0)} / {_fmt_time(dur_ms)}")
+        self._time_label.setText(f"{_fmt_time(pos)} / {_fmt_time(self._player.duration())}")
 
     def _on_slider_released(self):
         self._seeking = False
-        self._seek_to(self._slider.value())
+        self._player.setPosition(self._slider.value())
 
 
 class _ProcessingStats(QGroupBox):

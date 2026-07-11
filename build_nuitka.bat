@@ -13,6 +13,7 @@ python -m nuitka --standalone ^
        --show-scons ^
        --module-parameter=torch-disable-jit=yes ^
        --enable-plugin=pyside6 ^
+       --include-qt-plugins=multimedia ^
        --include-package=ultralytics ^
        --include-package=processor ^
        --include-package=gui ^
