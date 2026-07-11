@@ -1,0 +1,15 @@
+.claude
+openspec
+
+build
+dist
+
+*.mp4
+ultralytics
+
+.idea
+.vscode
+
+打包命令
+*.spec
+通过导出onnx模型来优化通用cpu上运行的性能.py

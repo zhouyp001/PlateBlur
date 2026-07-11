@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf8'?>
+<nuitka-compilation-report nuitka_version="2.8.9" nuitka_commercial_version="not installed" mode="onefile" completion="error exit message (1)" exit_message="pyqt5: Error, failed to locate the 'PyQt5' installation.">
+  <performance>
+    <memory_usage name="after_launch" value="40275968" />
+  </performance>
+  <data_composer blob_size="None" />
+  <command_line>
+    <option value="--standalone" />
+    <option value="--onefile" />
+    <option value="--windows-disable-console" />
+    <option value="--remove-output" />
+    <option value="--include-package-data=ultralytics" />
+    <option value="--include-data-file=best.pt=best.pt" />
+    <option value="--enable-plugin=pyqt5" />
+    <option value="do_video_2.py" />
+  </command_line>
+  <plugins>
+    <plugin name="anti-bloat" user_enabled="no" />
+    <plugin name="data-files" user_enabled="no" />
+    <plugin name="delvewheel" user_enabled="no" />
+    <plugin name="dll-files" user_enabled="no" />
+    <plugin name="eventlet" user_enabled="no" />
+    <plugin name="gevent" user_enabled="no" />
+    <plugin name="gi" user_enabled="no" />
+    <plugin name="glfw" user_enabled="no" />
+    <plugin name="implicit-imports" user_enabled="no" />
+    <plugin name="kivy" user_enabled="no" />
+    <plugin name="matplotlib" user_enabled="no" />
+    <plugin name="multiprocessing" user_enabled="no" />
+    <plugin name="options-nanny" user_enabled="no" />
+    <plugin name="pbr-compat" user_enabled="no" />
+    <plugin name="pkg-resources" user_enabled="no" />
+    <plugin name="playwright" user_enabled="no" />
+    <plugin name="pyqt5" user_enabled="yes" />
+    <plugin name="pywebview" user_enabled="no" />
+    <plugin name="spacy" user_enabled="no" />
+    <plugin name="transformers" user_enabled="no" />
+  </plugins>
+  <onefile cache_mode="temporary" unpack_dir="{TEMP}\onefile_{PID}_{TIME}" />
+  <distributions />
+  <python python_exe="${sys.prefix}\python.exe" python_flavor="Anaconda Python" python_version="3.9.18" os_name="Windows" os_release="10" arch_name="x86_64" filesystem_encoding="utf-8">
+    <search_path>
+      <path value="${cwd}" />
+      <path value="${sys.prefix}\DLLs" />
+      <path value="${sys.prefix}\lib" />
+      <path value="${sys.prefix}" />
+      <path value="${sys.prefix}\lib\site-packages" />
+      <path value="${sys.prefix}\lib\site-packages\moviepy-1.0.3-py3.9.egg" />
+      <path value="${sys.prefix}\lib\site-packages\win32" />
+      <path value="${sys.prefix}\lib\site-packages\win32\lib" />
+      <path value="${sys.prefix}\lib\site-packages\Pythonwin" />
+    </search_path>
+  </python>
+  <output run_filename="failed too early" />
+</nuitka-compilation-report>
