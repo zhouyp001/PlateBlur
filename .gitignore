@@ -13,3 +13,14 @@ ultralytics
 打包命令
 *.spec
 通过导出onnx模型来优化通用cpu上运行的性能.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+env/
+.DS_Store
+Thumbs.db
+nuitka-crash-report.xml
