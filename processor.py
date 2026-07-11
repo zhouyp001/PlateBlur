@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 import time
 import yaml
@@ -14,7 +15,14 @@ os.environ["MKL_NUM_THREADS"] = "8"
 
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path(__file__).resolve().parent
+
+def _get_base_dir():
+    if getattr(sys, 'frozen', False) or '__compiled__' in dir(__builtins__):
+        return Path(sys.executable).parent
+    return Path(__file__).resolve().parent
+
+
+BASE_DIR = _get_base_dir()
 DEFAULT_CONFIG = {
     'conf': 0.15,
     'resize': 1280,

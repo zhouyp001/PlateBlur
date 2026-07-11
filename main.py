@@ -3,12 +3,11 @@ import logging
 
 from PySide6.QtWidgets import QApplication
 from gui.main_window import MainWindow
+from logging_config import setup_logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - [%(threadName)s] - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%H:%M:%S'
-)
+setup_logging()
+
+logger = logging.getLogger(__name__)
 
 
 def main():
