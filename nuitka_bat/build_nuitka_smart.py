@@ -58,7 +58,7 @@ def build_nuitka_args(info):
         ("weights/best.pt", "./weights/best.pt"),
         ("weights/best_imgsz_1280.onnx", "./weights/best_imgsz_1280.onnx"),
         ("config/config.yml", "./config/config.yml"),
-        ("openh264-1.8.0-win64.dll", "./openh264-1.8.0-win64.dll"),
+        ("nuitka_bat/openh264-1.8.0-win64.dll", "./openh264-1.8.0-win64.dll"),
     ]
     for src, dst in data_files:
         if os.path.exists(src):

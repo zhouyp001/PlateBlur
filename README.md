@@ -77,13 +77,13 @@ model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 │   └── test_video_player_qt.py
 ├── nuitka_bat/              # Nuitka 打包脚本
 │   ├── build_nuitka.bat
-│   └── build_nuitka_smart.py
+│   ├── build_nuitka_smart.py
+│   └── openh264-1.8.0-win64.dll # H.264 编码器
 ├── old/                     # 旧版 CLI 脚本（仅供参考）
 │   ├── do_video_1.py
 │   ├── do_video_2.py
 │   └── do_video4onnx.py
-├── requirements.txt         # Python 依赖
-└── openh264-1.8.0-win64.dll # H.264 编码器
+└── requirements.txt         # Python 依赖
 ```
 
 ## 打包为独立可执行文件

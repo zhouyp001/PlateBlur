@@ -22,7 +22,7 @@ python -m nuitka --standalone ^
        --include-data-files=weights/best.pt=./weights/best.pt ^
        --include-data-files=weights/best_imgsz_1280.onnx=./weights/best_imgsz_1280.onnx ^
        --include-data-files=config/config.yml=./config/config.yml ^
-       --include-data-files=openh264-1.8.0-win64.dll=./openh264-1.8.0-win64.dll ^
+       --include-data-files=nuitka_bat/openh264-1.8.0-win64.dll=./openh264-1.8.0-win64.dll ^
        --output-dir=dist ^
        main.py
 
