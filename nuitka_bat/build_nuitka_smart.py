@@ -2,6 +2,11 @@
 import os
 import sys
 import subprocess
+from pathlib import Path
+
+# 切换到项目根目录
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+os.chdir(PROJECT_ROOT)
 
 
 def detect_hardware():
@@ -51,8 +56,8 @@ def build_nuitka_args(info):
         args.append("--lto=no")
 
     data_files = [
-        ("best.pt", "./best.pt"),
-        ("best_imgsz_1280.onnx", "./best_imgsz_1280.onnx"),
+        ("weights/best.pt", "./weights/best.pt"),
+        ("weights/best_imgsz_1280.onnx", "./weights/best_imgsz_1280.onnx"),
         ("config.yml", "./config.yml"),
         ("openh264-1.8.0-win64.dll", "./openh264-1.8.0-win64.dll"),
     ]

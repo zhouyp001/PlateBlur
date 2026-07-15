@@ -27,8 +27,8 @@ DEFAULT_CONFIG = {
     'conf': 0.15,
     'resize': 1280,
     'skip': 1,
-    'model_pt': 'best.pt',
-    'model_onnx': 'best_imgsz_1280.onnx',
+    'model_pt': 'weights/best.pt',
+    'model_onnx': 'weights/best_imgsz_1280.onnx',
 }
 
 

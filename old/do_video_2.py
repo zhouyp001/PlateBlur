@@ -114,8 +114,8 @@ if __name__ == '__main__':
                         help='跳帧数量 (0为不跳帧, 1为每2帧处理1次, 默认: 1)')
 
     # 可选参数：模型路径
-    parser.add_argument('--model', type=str, default='best.pt',
-                        help='模型文件路径 (默认: best.pt)')
+    parser.add_argument('--model', type=str, default='../weights/best.pt',
+                        help='模型文件路径 (默认: ../weights/best.pt)')
 
     # 解析参数
     args = parser.parse_args()

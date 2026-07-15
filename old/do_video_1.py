@@ -70,7 +70,7 @@ def draw_mosaic(frame, results):
 if __name__ == '__main__':
     video_path = 'tmp4_end5s.mp4'
     output_path = 'tmp4_end5s_result1.mp4'
-    model_path = 'best.pt'
+    model_path = '../weights/best.pt'
     resize4model = 1920
     confidence = 0.15
 

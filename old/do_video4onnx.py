@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # --- 配置参数 ---
     video_path = 'tmp4_end5s.mp4'
     output_path = 'tmp4_end5s_result_onnx.mp4'
-    model_path = 'best_imgsz_1280.onnx'
+    model_path = '../weights/best_imgsz_1280.onnx'
     resize4model = 1280
     confidence = 0.15
     skip_frames = 1

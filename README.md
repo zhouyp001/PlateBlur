@@ -51,7 +51,7 @@ python main.py
 项目也保留了命令行脚本，供有需要的用户使用：
 
 ```bash
-python do_video_2.py input.mp4 --output result.mp4
+python old/do_video_2.py input.mp4 --output result.mp4
 ```
 
 | 参数 | 默认值 | 说明 |
@@ -61,7 +61,7 @@ python do_video_2.py input.mp4 --output result.mp4
 | `--resize` / `-r` | `1280` | 推理图像尺寸 |
 | `--conf` | `0.15` | 检测置信度阈值 |
 | `--skip` / `-s` | `1` | 跳帧间隔（0 = 每帧推理） |
-| `--model` | `best.pt` | 模型文件路径 |
+| `--model` | `../weights/best.pt` | 模型文件路径 |
 
 ## 配置
 
@@ -71,8 +71,8 @@ python do_video_2.py input.mp4 --output result.mp4
 conf: 0.15              # 检测置信度阈值 (0.0 - 1.0)
 resize: 1280            # 推理图像尺寸
 skip: 1                 # 跳帧间隔 (0 = 每帧推理)
-model_pt: best.pt               # PyTorch 模型 (CUDA 使用)
-model_onnx: best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
+model_pt: weights/best.pt               # PyTorch 模型 (CUDA 使用)
+model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 ```
 
 ## 项目结构
@@ -86,24 +86,31 @@ model_onnx: best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 ├── logging_config.py        # 日志配置
 ├── config.yml               # 用户配置文件
 ├── requirements.txt         # Python 依赖
-├── best.pt                  # YOLO 模型 (~6MB)
-├── best_imgsz_1280.onnx     # ONNX 导出模型 (~13MB)
+├── export_onnx.py           # ONNX 模型导出脚本
 ├── openh264-1.8.0-win64.dll # H.264 编码器
-├── build_nuitka.bat         # Nuitka 打包脚本
-├── build_nuitka_smart.py    # 智能 Nuitka 打包脚本（硬件自适应）
-├── do_video_2.py            # CLI 命令行（argparse）
-├── do_video4onnx.py         # CLI ONNX 优化版本
-└── export_onnx.py           # ONNX 模型导出脚本
+├── weights/                 # 模型文件
+│   ├── best.pt              # YOLO 模型 (~6MB)
+│   └── best_imgsz_1280.onnx # ONNX 导出模型 (~13MB)
+├── tests/                   # 测试文件
+│   ├── test_video_player.py
+│   └── test_video_player_qt.py
+├── nuitka_bat/              # Nuitka 打包脚本
+│   ├── build_nuitka.bat
+│   └── build_nuitka_smart.py
+└── old/                     # 旧版 CLI 脚本（仅供参考）
+    ├── do_video_1.py
+    ├── do_video_2.py
+    └── do_video4onnx.py
 ```
 
 ## 打包为独立可执行文件
 
 ```bash
 # 智能打包（自动检测硬件、自适应并行编译参数）
-python build_nuitka_smart.py
+python nuitka_bat/build_nuitka_smart.py
 
 # 或使用批处理脚本
-build_nuitka.bat
+nuitka_bat/build_nuitka.bat
 ```
 
 产物在 `dist/main.dist/main.exe`，无需安装 Python 即可运行。

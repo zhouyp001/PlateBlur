@@ -4,5 +4,5 @@
 conf: 0.15         # 检测置信度阈值 (0.0 - 1.0)
 resize: 1280       # 推理图像尺寸
 skip: 1            # 跳帧间隔 (0 = 每帧推理, 1 = 每隔一帧推理)
-model_pt: best.pt           # PyTorch 模型路径 (CUDA 使用)
-model_onnx: best_imgsz_1280.onnx  # ONNX 模型路径 (CPU 使用)
+model_pt: weights/best.pt           # PyTorch 模型路径 (CUDA 使用)
+model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型路径 (CPU 使用)
