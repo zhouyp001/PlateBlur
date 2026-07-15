@@ -1,4 +1,4 @@
-# 车牌马赛克工具
+# PlateBlur — 车牌马赛克工具
 
 对视频中的车牌自动检测并添加马赛克（高斯模糊）的桌面应用。基于 PySide6 + YOLO + OpenCV 构建。
 
@@ -15,8 +15,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/zyipeng/hide-license-plate.git
-cd hide-license-plate
+git clone https://github.com/zhouyp001/PlateBlur.git
+cd PlateBlur
 
 # 安装依赖
 pip install -r requirements.txt
