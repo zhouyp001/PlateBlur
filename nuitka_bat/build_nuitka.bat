@@ -16,13 +16,12 @@ python -m nuitka --standalone ^
        --enable-plugin=pyside6 ^
        --include-qt-plugins=multimedia ^
        --include-package=ultralytics ^
-       --include-package=processor ^
+       --include-package=utils ^
        --include-package=gui ^
-       --include-package=logging_config ^
        --include-package=torch.cuda ^
        --include-data-files=weights/best.pt=./weights/best.pt ^
        --include-data-files=weights/best_imgsz_1280.onnx=./weights/best_imgsz_1280.onnx ^
-       --include-data-files=config.yml=./config.yml ^
+       --include-data-files=config/config.yml=./config/config.yml ^
        --include-data-files=openh264-1.8.0-win64.dll=./openh264-1.8.0-win64.dll ^
        --output-dir=dist ^
        main.py

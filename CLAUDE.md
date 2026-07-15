@@ -9,8 +9,10 @@ A desktop GUI application (PySide6) that detects license plates in videos using 
 ## Main Scripts
 
 - **`main.py`** — GUI application entry point (PySide6 desktop app).
-- **`processor.py`** — Video processing engine (YOLO inference + mosaic + QThread).
+- **`utils/processor.py`** — Video processing engine (YOLO inference + mosaic + QThread).
 - **`gui/main_window.py`** — Main window, video player, stats panel, resource monitor.
+- **`utils/logging_config.py`** — Logging setup (rotating file + console).
+- **`config/config.yml`** — User configuration file.
 - **`old/do_video_2.py`** — Legacy CLI script with argparse (kept for reference).
 - **`old/do_video4onnx.py`** — Legacy CLI ONNX variant (kept for reference).
 - **`old/do_video_1.py`** — Early prototype with hardcoded paths (kept for reference).
@@ -22,7 +24,7 @@ A desktop GUI application (PySide6) that detects license plates in videos using 
 python main.py
 
 # Export model to ONNX for faster CPU inference
-python export_onnx.py
+python utils/export_onnx.py
 
 # Package with Nuitka (smart build with hardware detection)
 python nuitka_bat/build_nuitka_smart.py

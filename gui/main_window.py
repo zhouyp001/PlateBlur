@@ -19,7 +19,7 @@ from PySide6.QtCore import Qt, QUrl, QTimer, QThread
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 
-from processor import VideoProcessor, auto_detect, load_config
+from utils.processor import VideoProcessor, auto_detect, load_config
 
 logger = logging.getLogger(__name__)
 

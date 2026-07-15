@@ -33,8 +33,6 @@ pip install -r requirements.txt
 
 ## 使用方式
 
-### 桌面 GUI（主要方式）
-
 ```bash
 python main.py
 ```
@@ -42,36 +40,19 @@ python main.py
 操作流程：
 
 1. 点击「选择视频」打开待处理的视频文件
-2. 确认 `config.yml` 中的参数（置信度、跳帧等）
+2. 确认 `config/config.yml` 中的参数（置信度、跳帧等）
 3. 点击「开始处理」，实时查看处理进度和统计信息
 4. 处理完成后在右侧预览结果，点击「另存为」导出
 
-### 命令行（可选）
-
-项目也保留了命令行脚本，供有需要的用户使用：
-
-```bash
-python old/do_video_2.py input.mp4 --output result.mp4
-```
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `input` | (必填) | 输入视频路径 |
-| `--output` / `-o` | `{input}_result.mp4` | 输出视频路径 |
-| `--resize` / `-r` | `1280` | 推理图像尺寸 |
-| `--conf` | `0.15` | 检测置信度阈值 |
-| `--skip` / `-s` | `1` | 跳帧间隔（0 = 每帧推理） |
-| `--model` | `../weights/best.pt` | 模型文件路径 |
-
 ## 配置
 
-编辑 `config.yml` 调整处理参数，修改后重启应用生效：
+编辑 `config/config.yml` 调整处理参数，修改后重启应用生效：
 
 ```yaml
-conf: 0.15              # 检测置信度阈值 (0.0 - 1.0)
-resize: 1280            # 推理图像尺寸
-skip: 1                 # 跳帧间隔 (0 = 每帧推理)
-model_pt: weights/best.pt               # PyTorch 模型 (CUDA 使用)
+conf: 0.15                             # 检测置信度阈值 (0.0 - 1.0)
+resize: 1280                           # 推理图像尺寸
+skip: 1                                # 跳帧间隔 (0 = 每帧推理)
+model_pt: weights/best.pt              # PyTorch 模型 (CUDA 使用)
 model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 ```
 
@@ -82,12 +63,12 @@ model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 ├── main.py                  # GUI 应用入口
 ├── gui/
 │   └── main_window.py       # 主窗口、视频播放器、统计面板、资源监控
-├── processor.py             # 视频处理引擎（YOLO推理 + 马赛克 + QThread）
-├── logging_config.py        # 日志配置
-├── config.yml               # 用户配置文件
-├── requirements.txt         # Python 依赖
-├── export_onnx.py           # ONNX 模型导出脚本
-├── openh264-1.8.0-win64.dll # H.264 编码器
+├── utils/                   # 工具模块
+│   ├── processor.py         # 视频处理引擎（YOLO推理 + 马赛克 + QThread）
+│   ├── logging_config.py    # 日志配置
+│   └── export_onnx.py       # ONNX 模型导出脚本
+├── config/
+│   └── config.yml           # 用户配置文件
 ├── weights/                 # 模型文件
 │   ├── best.pt              # YOLO 模型 (~6MB)
 │   └── best_imgsz_1280.onnx # ONNX 导出模型 (~13MB)
@@ -97,10 +78,12 @@ model_onnx: weights/best_imgsz_1280.onnx  # ONNX 模型 (CPU 使用)
 ├── nuitka_bat/              # Nuitka 打包脚本
 │   ├── build_nuitka.bat
 │   └── build_nuitka_smart.py
-└── old/                     # 旧版 CLI 脚本（仅供参考）
-    ├── do_video_1.py
-    ├── do_video_2.py
-    └── do_video4onnx.py
+├── old/                     # 旧版 CLI 脚本（仅供参考）
+│   ├── do_video_1.py
+│   ├── do_video_2.py
+│   └── do_video4onnx.py
+├── requirements.txt         # Python 依赖
+└── openh264-1.8.0-win64.dll # H.264 编码器
 ```
 
 ## 打包为独立可执行文件

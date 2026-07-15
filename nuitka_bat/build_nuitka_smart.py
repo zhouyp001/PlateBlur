@@ -45,9 +45,8 @@ def build_nuitka_args(info):
         "--enable-plugin=pyside6",
         "--include-qt-plugins=multimedia",
         "--include-package=ultralytics",
-        "--include-package=processor",
+        "--include-package=utils",
         "--include-package=gui",
-        "--include-package=logging_config",
         "--include-package=torch.cuda",
         "--assume-yes-for-downloads",
     ]
@@ -58,7 +57,7 @@ def build_nuitka_args(info):
     data_files = [
         ("weights/best.pt", "./weights/best.pt"),
         ("weights/best_imgsz_1280.onnx", "./weights/best_imgsz_1280.onnx"),
-        ("config.yml", "./config.yml"),
+        ("config/config.yml", "./config/config.yml"),
         ("openh264-1.8.0-win64.dll", "./openh264-1.8.0-win64.dll"),
     ]
     for src, dst in data_files:

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def _get_base_dir():
     if getattr(sys, 'frozen', False) or '__compiled__' in dir(__builtins__):
         return Path(sys.executable).parent
-    return Path(__file__).resolve().parent
+    return Path(__file__).resolve().parent.parent
 
 
 BASE_DIR = _get_base_dir()
@@ -33,7 +33,7 @@ DEFAULT_CONFIG = {
 
 
 def load_config():
-    config_path = BASE_DIR / 'config.yml'
+    config_path = BASE_DIR / 'config' / 'config.yml'
     config = dict(DEFAULT_CONFIG)
     if config_path.exists():
         try:
