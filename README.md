@@ -12,6 +12,16 @@
 - **实时统计** — 处理进度、速度、剩余时间、系统资源（CPU/RAM/GPU）实时显示
 - **结果预览** — 处理前后视频并排对比播放
 
+## 演示
+
+<table>
+<tr>
+  <td align="center"><img src="assets/show-1.png" alt="主界面"><br><sub>主界面</sub></td>
+  <td align="center"><img src="assets/show-2.png" alt="处理中"><br><sub>处理中</sub></td>
+  <td align="center"><img src="assets/show-3.png" alt="结果预览"><br><sub>结果预览</sub></td>
+</tr>
+</table>
+
 ## 安装
 
 ```bash
