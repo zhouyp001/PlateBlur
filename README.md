@@ -1,5 +1,9 @@
 # PlateBlur — 车牌马赛克桌面应用
 
+[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows&logoColor=white)]()
+
 基于 PySide6 + YOLO + OpenCV 构建的 **桌面 GUI 应用**，对视频中的车牌自动检测并添加马赛克（高斯模糊），保护隐私。
 
 ## 功能
