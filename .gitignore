@@ -1,21 +1,6 @@
-.claude
-openspec
-
-build
-dist
-dist_cv_backup
-dist_qt_test
-doc
-
-*.mp4
-ultralytics
-
+# IDE
 .idea
 .vscode
-
-打包命令
-*.spec
-通过导出onnx模型来优化通用cpu上运行的性能.py
 
 # Python
 __pycache__/
@@ -24,8 +9,28 @@ __pycache__/
 .env
 venv/
 env/
+
+# OS
 .DS_Store
 Thumbs.db
-nuitka-crash-report.xml
 
-放gpu电脑上打包
+# Build artifacts
+build/
+dist/
+dist_cv_backup/
+dist_qt_test/
+*.spec
+
+# Vendored libraries
+ultralytics/
+
+# Media
+*.mp4
+
+# Internal dev tools
+.claude/
+openspec/
+doc/
+nuitka-crash-report.xml
+打包命令
+放gpu电脑上打包/
