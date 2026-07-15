@@ -18,6 +18,7 @@ python -m nuitka --standalone ^
        --include-package=processor ^
        --include-package=gui ^
        --include-package=logging_config ^
+       --include-package=torch.cuda ^
        --include-data-files=best.pt=./best.pt ^
        --include-data-files=best_imgsz_1280.onnx=./best_imgsz_1280.onnx ^
        --include-data-files=config.yml=./config.yml ^
